@@ -50,26 +50,27 @@ function paginateProducts(page){
 paginateProducts(5);
 
 //drill 3 - get all items added after date
-
 //SELECT id, name, price, date_added, checked, category
 //FROM shopping_list
-//WHERE date_added > (now() - 30days :: INTERVAL);
+//WHERE date_added > (now() - 5days :: INTERVAL);
 
- function productsAfterDate(days){
+
+ function productsAfterDate(daysAgo){
     knexInstance
-        .select('id', 'name', 'price', 'date_added' , 'checked' , 'category')
-        .from('shopping_list')
-        .where(
-            'date_added',
-            '>',
-            knexInstance.raw(`now() - '?? days' :: INTERVAL`, days)
+    .select('id', 'name', 'price', 'date_added', 'checked', 'category')
+    .from('shopping_list')
+    .where(
+        'date_added',
+        '>',
+            knexInstance.raw(`now() - '??days' :: INTERVAL`, daysAgo)
+        )
         .then(result =>{
             console.log(result);
         })
-        )
+
  }
 
- productsAfterDate(3);
+ productsAfterDate(5)
 
 // drill 4 - get the total cost for each category
 
