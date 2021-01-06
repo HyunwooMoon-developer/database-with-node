@@ -2,7 +2,7 @@
 require('dotenv').config()
 const knex = require('knex');
 
-const knexInstance = knex({
+const db = knex({
     client: 'pg',
     connection: process.env.DB_URL,
 });
@@ -14,7 +14,7 @@ const knexInstance = knex({
 //WHERE name ILKIE '%burger%' ;
 
 function searchByproductName(searchTerm){
-    knexInstance
+    db
         .select('id', 'name', 'price', 'category')
         .from('shopping_list')
         .where('name', 'ilike', `%${searchTerm}%`)
@@ -37,7 +37,7 @@ function paginateProducts(page){
     const productsPerPage = 6
     const offset = productsPerPage*(page -1);
 
-    knexInstance
+    db
         .select('id', 'name', 'price', 'category')
         .from('shopping_list')
         .limit(productsPerPage)
@@ -56,13 +56,13 @@ paginateProducts(5);
 
 
  function productsAfterDate(daysAgo){
-    knexInstance
+    db
     .select('id', 'name', 'price', 'date_added', 'checked', 'category')
     .from('shopping_list')
     .where(
         'date_added',
         '>',
-            knexInstance.raw(`now() - '??days' :: INTERVAL`, daysAgo)
+            db.raw(`now() - '??days' :: INTERVAL`, daysAgo)
         )
         .then(result =>{
             console.log(result);
@@ -79,7 +79,7 @@ paginateProducts(5);
 //GROUP BY category;
 
 function totalPerCategory(){
-    knexInstance
+    db
     .select('category')
     .sum('price as total')
     .from('shopping_list')
